@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="e404">
+    <h1 style="transform: scale(2);">404</h1>
+    <h1>page not found!</h1>
+    <p>It's a mystery to us how did you got here. Actually this place does not exists, so we suggest to go back to the homepage.</p>
+    <a style="padding: 0;" href="{{ url_for('index')}}">Homepage</a>
+</section>
+{% endblock %}

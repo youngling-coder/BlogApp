@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post">
+    <h2>welcome</h2>
+    <div class="flash-area">
+        {% for cat, msg in get_flashed_messages(True) %}
+            <p class=" flash {{cat}}">{{msg}}</p>
+        {% endfor %}
+    </div>
+    {{ form.csrf_token }}
+    {{ form.username }}
+    {{ form.password }}
+    {{ form.rpassword }}
+    <button>sign up</button>
+    <a style="padding: 0; text-align: center;" href="{{ url_for('index') }}">Log In</a>
+</form>
+{% endblock %}

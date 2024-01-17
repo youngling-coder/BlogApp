@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- <form method="post">
+    <h2>welcome</h2>
+    <div class="flash-area">
+        {% for cat, msg in get_flashed_messages(True) %}
+            <p class=" flash {{cat}}">{{msg}}</p>
+        {% endfor %}
+    </div>
+    <input maxlength=32 name="username" type="text" placeholder="Enter username..." required>
+    <input maxlength=64 name="password" type="password" placeholder="Enter password..." required>
+    <button>log in</button>
+    <p>No account?<a href="{{ url_for('signup') }}">Sign up</a></p>
+</form> -->
+
+<form method="POST">
+    <h2>welcome</h2>
+    <div class="flash-area">
+        {% for cat, msg in get_flashed_messages(True) %}
+            <p class=" flash {{cat}}">{{msg}}</p>
+        {% endfor %}
+    </div>
+    {{ form.csrf_token }}
+    {{ form.username }}
+    {{ form.password }}
+    <button>log in</button>
+    <a style="padding: 0; text-align: center;" href="{{ url_for('signup') }}">sign up</a>
+
+</form>
+
+{% endblock %}

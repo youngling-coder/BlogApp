@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="user-header profile">
+        <img class="profile-picture" src="https://img.icons8.com/ios/100/user--v1.png">
+        <form class="update" method="post">
+            {% if username %}
+            <p>@{{ username }}</p>
+            {% else %}
+            <p>User</p>
+            <!-- <p>Cannot load the username!</p> -->
+            {% endif %}
+        </form>
+
+        <form class="update" method="post">
+            {% if username %}
+            <p>@{{ username }}</p>
+            {% else %}
+            <p>User</p>
+            <!-- <p>Cannot load the username!</p> -->
+            {% endif %}
+        </form>
+
+        <form class="update" method="post">
+            {% if username %}
+            <p>@{{ username }}</p>
+            {% else %}
+            <p>User</p>
+            <!-- <p>Cannot load the username!</p> -->
+            {% endif %}
+        </form>
+        <div class="control-buttons">
+            <a href="{{ url_for('settings')}}">feed</a>
+            <a href="{{ url_for('logout')}}">Logout</a>
+        </div>
+    </section>
+{% endblock %}
