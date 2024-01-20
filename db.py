@@ -1,5 +1,5 @@
-from psycopg2 import sql, errors
-
+from psycopg2 import sql, errors, connect
+import os
 
 class BlogApp_TableNames:
     users = "users"
@@ -8,19 +8,60 @@ class BlogApp_TableNames:
 
 
 class BlogApp_DB:
-    def __init__(self, conn) -> None:
-        self.conn = conn
-        self.cursor = conn.cursor()
+    def __init__(self) -> None:
+        self.conn = connect(dbname="BlogApp",
+                            user=os.getenv("PostgreUSR"),
+                            password=os.getenv("PostgrePWD"),
+                            host="localhost"
+                            )
+        self.cursor = self.conn.cursor()
 
-    def add_user(self, username, password):
+    def _update_all_occurences(self, data, new_data, column, table):
         try:
-            request = sql.SQL("insert into {} (username, password) values (%s, %s);").format(sql.Identifier(BlogApp_TableNames.users))
-            self.cursor.execute(request, (username, password))
+
+            request = sql.SQL("update {} set {} = %s where {} = %s;").format(sql.Identifier(table), sql.Identifier(column),sql.Identifier(column))
+
+            self.cursor.execute(request, (new_data, data))
+            self.conn.commit()
+        except Exception as e:
+            print(e)
+
+    def delete_user(self, userid):
+        try:
+            request = sql.SQL("delete from {} where userid = %s;").format(sql.Identifier(BlogApp_TableNames.users))
+            self.cursor.execute(request, (userid,))
+            self.conn.commit()
+        except Exception as e:
+            print(e)
+
+    def update_username(self, userid, new_username):
+        try:
+            old_user = self.get_user_by_id(id_=userid)
+
+            self.add_user(username=new_username, password=old_user["password"], profile_picture_src=old_user["profile_picture"])
+
+            self._update_all_occurences(data=old_user["username"],
+                                        new_data=new_username,
+                                        column="creator",
+                                        table="posts")
+
+            self._update_all_occurences(data=old_user["username"],
+                                        new_data=new_username,
+                                        column="username",
+                                        table="likes")
+
+            self.delete_user(userid=userid)
+
+        except Exception as e:
+            print(e)
+
+    def add_user(self, username, password, profile_picture_src):
+        try:
+            request = sql.SQL("insert into {} (username, password, profile_picture) values (%s, %s, %s);").format(sql.Identifier(BlogApp_TableNames.users))
+            self.cursor.execute(request, (username, password, profile_picture_src))
             self.conn.commit()
         except errors.UniqueViolation:
             return "Username already exists!"
-
-        return None
 
     def _result_to_dict(self, result):
         # Represent result as dictionary

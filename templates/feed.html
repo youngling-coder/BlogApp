@@ -4,7 +4,7 @@
 
     <div class="wrapper">
         <section class="user-header">
-            <img class="profile-picture" src="https://img.icons8.com/ios/100/user--v1.png">
+            <img class="profile-picture" src="{{ profile_picture_src }}">
             {% if username %}
                 <h3>@{{ username }}</h3>
             {% else %}
@@ -17,9 +17,9 @@
                 <button name="search_user_submit">search</button>
             </form>
             <div class="control-buttons">
-                <a href="{{ url_for('index')}}">Home</a>
-                <a href="{{ url_for('settings')}}">Settings</a>
-                <a href="{{ url_for('logout')}}">Logout</a>
+                {% for item in menu_items %}
+                    <a href="{{ url_for(item.url) }}">{{ item.name }}</a>
+                {% endfor %}
             </div>
         </section>
 
@@ -28,7 +28,7 @@
             <form class="add-post" method="post">
                 <h3>Tell the world what's going on in your life</h3>
                 {% for cat, msg in get_flashed_messages(True) %}
-                    <p class=" flash {{cat}}">{{msg}}</p>
+                    <p class=" flash {{ cat }}">{{ msg }}</p>
                 {% endfor %}
                 {{ create_post_form.csrf_token }}
                 {{ create_post_form.title }}
@@ -39,27 +39,27 @@
             {% if posts %}
                 {% for post in posts %}
                     <div class="post-info">
-                        <a class="username" href="{{ url_for('feed', username=visited_page_username) }}">@{{post["creator"]}}</a>
+                        <a class="username" href="{{ url_for('feed', username=visited_page_username) }}">@{{post.creator}}</a>
                         <div class="like-wrapper">
-                            {% if post['postid'] in user_likes %}
-                                <a href="{{ url_for('unlike', redirect_username=visited_page_username, postid=post['postid']) }}" class="like-button">
+                            {% if post.postid in user_likes %}
+                                <a href="{{ url_for('unlike', redirect_username=visited_page_username, postid=post.postid) }}" class="like-button">
                                     <img width="16" height="16" src="https://img.icons8.com/ios-filled/ff0000/16/like--v1.png"/>
                                 </a>
                             {% else %}
-                                <a href="{{ url_for('like', redirect_username=visited_page_username, postid=post['postid']) }}" class="like-button">
+                                <a href="{{ url_for('like', redirect_username=visited_page_username, postid=post.postid) }}" class="like-button">
                                     <img width="16" height="16" src="https://img.icons8.com/ios-filled/777777/16/like--v1.png"/>
                                 </a>
                             {% endif %}
-                            <p>{{post["likes"]}}</p>
+                            <p>{{ post.likes }}</p>
                         </div>
                     </div>
-                    <div name="{{ post['postid'] }}" class="post">
-                        <h2 class="post-title">{{ post["title"] }}</h2>
-                        <p maxlength="32">{{ post["content"] }}</p>
+                    <div name="{{ post.postid }}" class="post">
+                        <h2 class="post-title">{{ post.title }}</h2>
+                        <p maxlength="32">{{ post.content }}</p>
                     </div>
                 {% endfor %}
             {% else %}
-                <h3 style="text-align: center;">{{ visited_page_username }} don't have any posts yet!</h3>
+                <h3 style="text-align: center;">{{ visited_page_username }} doesn't have any posts yet!</h3>
             {% endif %}
 
         </section>

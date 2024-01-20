@@ -2,7 +2,7 @@
     margin: 5px;
     padding: 5px;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    border-radius: 5px;
+    border-radius: 3px;
 }
 
 body, html {
@@ -22,7 +22,7 @@ form {
     justify-content: center;
 }
 
-form.user-search, form.add-post {
+form.user-search, form.add-post, form.update-profile {
     padding: 0;
     margin: 0;
     border: none;
@@ -41,29 +41,40 @@ form.add-post {
     }
 }
 
-input, textarea {
+input, textarea, label.image-input {
     outline: none;
     border: none;
     border: 1px solid #000000;
     transition: .3s all ease-in-out;
 }
 
+input[type="file"] {
+    display: none;
+}
+
+label.image-input {
+    text-align: center;
+}
 textarea {
     resize: none;
 }
 
-button {
+button, label.image-input {
     font-weight: bold;
+    cursor: pointer;
     text-transform: uppercase;
     text-decoration: none;
-    height: 30px;
     border: 1px solid #000000;
     background: #ffffff;
     transition: .3s all ease-in-out;
 }
 
+button {
+    height: 30px;
+}
 
-button:hover, input:focus, input:hover, textarea:hover {
+
+button:hover, input:focus, input:hover, textarea:hover, label.image-input:hover {
     border: 1px solid #000000;
     box-shadow: 5px 5px 0 #000000;
 }
@@ -96,8 +107,13 @@ section.profile {
     display: flex;
 }
 
-section.feed{
+section.feed, section.settings {
     width: 45vw;
+}
+
+section.settings {
+    display: flex;
+    flex-direction: column;
 }
 section.e404 {
     max-width: 250px;
@@ -199,9 +215,9 @@ p.flash {
 }
 
 img.profile-picture {
-    width: 150px;
-    height: 150px;
-    object-fit: contain;
+    width: 160px;
+    margin-top: -15px;
+    background-color: #ffffff;
     border: 1px solid #000000;
 }
 
@@ -213,8 +229,6 @@ a {
     img {
         padding: 0;
     }
-        /* content: url("https://img.icons8.com/ios-filled/777777/16/like--v1.png");
-    } */
 }
 
 a.username {
@@ -229,7 +243,4 @@ a.like-button {
 
 a:hover {
     text-decoration: underline;
-    /* img {
-        content: url("https://img.icons8.com/ios-filled/ff0000/16/like--v1.png");
-    } */
 }

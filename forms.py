@@ -1,5 +1,5 @@
 from wtforms import *
-
+from flask_wtf.file import FileAllowed
 class UpdateProfilePicture(Form):
     picture = FileField(label="Upload any picture")
 
@@ -37,3 +37,11 @@ class LoginForm(Form):
     password = PasswordField(validators=[validators.InputRequired(), validators.Length(max=64)], render_kw={
         "placeholder": "Enter password..."
         })
+
+
+class UpdateProfileForm(Form):
+    file_input = FileField(label="Upload pic", render_kw={"id": "profile_picture_uploader"},validators=[
+        FileAllowed(['image/*'])
+    ])
+
+    new_username = StringField(validators=[validators.Length(max=32)], render_kw={"placeholder": "Enter new username..."})

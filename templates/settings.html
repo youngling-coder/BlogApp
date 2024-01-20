@@ -1,37 +1,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <section class="user-header profile">
-        <img class="profile-picture" src="https://img.icons8.com/ios/100/user--v1.png">
-        <form class="update" method="post">
-            {% if username %}
-            <p>@{{ username }}</p>
-            {% else %}
-            <p>User</p>
-            <!-- <p>Cannot load the username!</p> -->
-            {% endif %}
-        </form>
 
-        <form class="update" method="post">
+    <div class="wrapper">
+        <section class="user-header">
+            <img class="profile-picture" src="{{ profile_picture_src }}">
             {% if username %}
-            <p>@{{ username }}</p>
+                <h3>@{{ username }}</h3>
             {% else %}
-            <p>User</p>
-            <!-- <p>Cannot load the username!</p> -->
+                <h3>Couldn't fetch username!</h3>
             {% endif %}
-        </form>
+            <hr>
+            <div class="control-buttons">
+                {% for item in menu_items %}
+                    <a href="{{ url_for(item.url) }}">{{ item.name }}</a>
+                {% endfor %}
+            </div>
+        </section>
 
-        <form class="update" method="post">
-            {% if username %}
-            <p>@{{ username }}</p>
-            {% else %}
-            <p>User</p>
-            <!-- <p>Cannot load the username!</p> -->
-            {% endif %}
-        </form>
-        <div class="control-buttons">
-            <a href="{{ url_for('settings')}}">feed</a>
-            <a href="{{ url_for('logout')}}">Logout</a>
-        </div>
-    </section>
+        <section class="settings" style="overflow-y:auto; border: none; padding: 0; margin: 0;">
+            <form method="post" class="update-profile">
+                <h3>Settings</h3>
+                {% for cat, msg in get_flashed_messages(True) %}
+                    <p class=" flash {{ cat }}">{{ msg }}</p>
+                {% endfor %}
+                <h4>Profile picture (available soon)</h4>
+                {{ update_form.csrf_token }}
+                {{ update_form.file_input }}
+                <label class="image-input" for="profile_picture_uploader">Load picture</label>
+
+                <h4>Username</h4>
+                {{ update_form.new_username}}
+                <button>Save changes</button>
+            </form>
+        </section>
+    </div>
+
+
 {% endblock %}

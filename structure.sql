@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     userid SERIAL PRIMARY KEY,
     username VARCHAR(32) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    profile_picture BYTEA
+    profile_picture VARCHAR(64) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS posts (
@@ -23,3 +23,9 @@ CREATE TABLE IF NOT EXISTS likes (
     username VARCHAR(32) NOT NULL REFERENCES users(username),
     postid INTEGER NOT NULL REFERENCES posts(postid)
 )
+
+-- CREATE TABLE IF NOT EXISTS messages {
+--     messageid SERIAL PRIMARY KEY,
+--     username VARCHAR(32) NOT NULL REFERENCES users(username),
+--     content VARCHAR(255) NOT NULL
+-- }
