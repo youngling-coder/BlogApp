@@ -39,14 +39,14 @@
             {% if posts %}
                 {% for post in posts %}
                     <div class="post-info">
-                        <a class="username" href="{{ url_for('feed', username=visited_page_username) }}">@{{post.creator}}</a>
+                        <a class="username" href="{{ url_for('feed', username=username) }}">@{{post.creator}}</a>
                         <div class="like-wrapper">
                             {% if post.postid in user_likes %}
-                                <a href="{{ url_for('unlike', redirect_username=visited_page_username, postid=post.postid) }}" class="like-button">
+                                <a href="{{ url_for('unlike', redirect_username=username, postid=post.postid) }}" class="like-button">
                                     <img width="16" height="16" src="https://img.icons8.com/ios-filled/ff0000/16/like--v1.png"/>
                                 </a>
                             {% else %}
-                                <a href="{{ url_for('like', redirect_username=visited_page_username, postid=post.postid) }}" class="like-button">
+                                <a href="{{ url_for('like', redirect_username=username, postid=post.postid) }}" class="like-button">
                                     <img width="16" height="16" src="https://img.icons8.com/ios-filled/777777/16/like--v1.png"/>
                                 </a>
                             {% endif %}
@@ -59,7 +59,7 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <h3 style="text-align: center;">{{ visited_page_username }} doesn't have any posts yet!</h3>
+                <h3 style="text-align: center;">{{ username }} doesn't have any posts yet!</h3>
             {% endif %}
 
         </section>

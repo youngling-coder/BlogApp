@@ -120,7 +120,6 @@ class BlogApp_DB:
 
             self.cursor.execute(request, (username, limit))
             res = self.cursor.fetchall()
-            #res = self._result_to_dict(result=res)
 
             return res
         except Exception as e:
