@@ -18,15 +18,19 @@ def check_post_validity(title: str, content: str):
         return "Content can be up to 500 symbols long"
     return 0
 
-def check_password_validity(psw: str):
+def check_password_validity(pwd: str, rpwd = None):
 
-    if len(psw) > PWD_MAX_LENGTH:
+    if rpwd and rpwd != pwd:
+        return "Passwords doesn't match"
+
+
+    if len(pwd) > PWD_MAX_LENGTH:
         return "Password is too long!"
-    if len(psw) < 8:
+    if len(pwd) < 8:
         return "Password must be at least 8 symbols long!"
-    if not bool(re.search(r'\d', psw)):
+    if not bool(re.search(r'\d', pwd)):
         return "Password must contain numbers!"
-    if not bool(re.search(r'[a-zA-Z]', psw)):
+    if not bool(re.search(r'[a-zA-Z]', pwd)):
         return "Password must contain any letters!"
     return 0
 

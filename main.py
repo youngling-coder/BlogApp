@@ -160,8 +160,6 @@ def settings():
         # Set up new username
         username = profile_update.new_username.data
 
-
-
         # Check if user want to check username
         if username:
 
@@ -204,23 +202,17 @@ def settings():
             if check_password_hash(current_user.get_password_hash(), old_password):
 
                 # Check for new password validity errors
-                new_password_validity_error = check_password_validity(new_password)
+                new_password_validity_error = check_password_validity(new_password, rnew_password)
 
                 if not new_password_validity_error:
-                    if new_password == rnew_password:
+                    # If there're no errors, update password and log user out to update UserLogin instance
+                    new_password = generate_password_hash(password=new_password)
+                    database.update_password(password=new_password, userid=current_user.get_id())
+                    flash("Password changed successfully!", category="success")
+                    logout()
 
-                        # If there're no errors, update password and log user out to update UserLogin instance
-                        new_password = generate_password_hash(password=new_password)
-                        database.update_password(password=new_password, userid=current_user.get_id())
-                        flash("Password changed successfully!", category="success")
-                        logout()
-
-                        # Redirect to the home page
-                        return redirect(url_for("index"))
-                    else:
-
-                        # Notify user about passwords doesn't match
-                        flash("New passwords doesn't match!", category="error")
+                    # Redirect to the home page
+                    return redirect(url_for("index"))
                 else:
 
                     # Notify user about password validity error
@@ -247,38 +239,34 @@ def signup():
     if request.method == "POST":
 
         # Check signup data for validity errors
-        validity_errors = (check_password_validity(psw=form.password.data), check_username_validity(username=form.username.data))
+        validity_errors = (check_password_validity(pwd=form.password.data,
+                                                   rpwd=form.rpassword.data),
+                           check_username_validity(username=form.username.data))
         validity_errors = tuple(filter(lambda x: x, validity_errors))
 
-        # Check if passwords are same
-        passwords_are_same = form.password.data == form.rpassword.data
         if not validity_errors:
-            if passwords_are_same:
 
-                # If passwords are same and there's no validity errors
-                # Obtain password hash
-                pwd_hash = generate_password_hash(password=form.password.data)
+            # If passwords are same and there's no validity errors
+            # Obtain password hash
+            pwd_hash = generate_password_hash(password=form.password.data)
 
-                # Set default picture path
-                profile_picture_src = url_for("static", filename=f"profile_img/default.png")
+            # Set default picture path
+            profile_picture_src = url_for("static", filename=f"profile_img/default.png")
 
-                # Try to add a new user, and save any error message
-                user_exists_error = database.add_user(form.username.data, pwd_hash, profile_picture_src=profile_picture_src)
+            # Try to add a new user, and save any error message
+            user_exists_error = database.add_user(form.username.data, pwd_hash, profile_picture_src=profile_picture_src)
 
-                if user_exists_error:
+            if user_exists_error:
 
-                    # Notify user if username is already taken
-                    flash(user_exists_error, category="error")
-                else:
-
-                    # Notify about successfull signup
-                    flash("Signed up successfully!", category="success")
-
-                    # Redirect to the home page
-                    return redirect(url_for("index"))
+                # Notify user if username is already taken
+                flash(user_exists_error, category="error")
             else:
-                # Notify user that passwords doesn't match
-                flash("Passwords doesn't match!", category="error")
+
+                # Notify about successfull signup
+                flash("Signed up successfully!", category="success")
+
+                # Redirect to the home page
+                return redirect(url_for("index"))
         else:
 
             # Notify user about validity errors
