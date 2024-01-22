@@ -19,17 +19,23 @@ class BlogApp_DB:
     def _update_all_occurences(self, data, new_data, column, table):
         try:
 
-            request = sql.SQL("update {} set {} = %s where {} = %s;").format(sql.Identifier(table), sql.Identifier(column),sql.Identifier(column))
+            query = sql.SQL("update {} set {} = %s where {} = %s;").format(sql.Identifier(table), sql.Identifier(column),sql.Identifier(column))
 
-            self.cursor.execute(request, (new_data, data))
+            self.cursor.execute(query, (new_data, data))
             self.conn.commit()
         except Exception as e:
             print(e)
 
+    def update_password(self, password, userid):
+
+        query = sql.SQL("update {} set password = %s where userid = %s;").format(sql.Identifier(BlogApp_TableNames.users))
+        self.cursor.execute(query, (password, userid))
+        self.conn.commit()
+
     def delete_user(self, userid):
         try:
-            request = sql.SQL("delete from {} where userid = %s;").format(sql.Identifier(BlogApp_TableNames.users))
-            self.cursor.execute(request, (userid,))
+            query = sql.SQL("delete from {} where userid = %s;").format(sql.Identifier(BlogApp_TableNames.users))
+            self.cursor.execute(query, (userid,))
             self.conn.commit()
         except Exception as e:
             print(e)
@@ -57,8 +63,8 @@ class BlogApp_DB:
 
     def add_user(self, username, password, profile_picture_src):
         try:
-            request = sql.SQL("insert into {} (username, password, profile_picture) values (%s, %s, %s);").format(sql.Identifier(BlogApp_TableNames.users))
-            self.cursor.execute(request, (username, password, profile_picture_src))
+            query = sql.SQL("insert into {} (username, password, profile_picture) values (%s, %s, %s);").format(sql.Identifier(BlogApp_TableNames.users))
+            self.cursor.execute(query, (username, password, profile_picture_src))
             self.conn.commit()
         except errors.UniqueViolation:
             return "Username already exists!"
@@ -72,8 +78,8 @@ class BlogApp_DB:
         return result
 
     def create_post(self, creator, title, content):
-        request = sql.SQL("insert into {} (creator, title, content) values (%s, %s, %s);").format(sql.Identifier(BlogApp_TableNames.posts))
-        self.cursor.execute(request, (creator, title, content))
+        query = sql.SQL("insert into {} (creator, title, content) values (%s, %s, %s);").format(sql.Identifier(BlogApp_TableNames.posts))
+        self.cursor.execute(query, (creator, title, content))
         self.conn.commit()
 
 
@@ -81,8 +87,8 @@ class BlogApp_DB:
         db_errors = []
 
         try:
-            request = sql.SQL("select * from users where userid = %s limit 1;")
-            self.cursor.execute(request, (id_,))
+            query = sql.SQL("select * from users where userid = %s limit 1;")
+            self.cursor.execute(query, (id_,))
             res = self.cursor.fetchall()
             res = self._result_to_dict(result=res)
 
@@ -93,32 +99,32 @@ class BlogApp_DB:
             return None
 
     def delete_like(self, username, postid):
-        request = sql.SQL("delete from {} where username like %s and postid = %s").format(sql.Identifier(BlogApp_TableNames.likes))
+        query = sql.SQL("delete from {} where username like %s and postid = %s").format(sql.Identifier(BlogApp_TableNames.likes))
 
-        self.cursor.execute(request, (username, postid))
+        self.cursor.execute(query, (username, postid))
         self.conn.commit()
 
-        request = sql.SQL("update posts set {} = likes - 1 where postid = %s;").format(sql.Identifier(BlogApp_TableNames.likes))
+        query = sql.SQL("update posts set {} = likes - 1 where postid = %s;").format(sql.Identifier(BlogApp_TableNames.likes))
 
-        self.cursor.execute(request, (postid,))
+        self.cursor.execute(query, (postid,))
         self.conn.commit()
 
     def add_like(self, username, postid):
-        request = sql.SQL("insert into {} (username, postid) values (%s, %s)").format(sql.Identifier(BlogApp_TableNames.likes))
+        query = sql.SQL("insert into {} (username, postid) values (%s, %s)").format(sql.Identifier(BlogApp_TableNames.likes))
 
-        self.cursor.execute(request, (username, postid))
+        self.cursor.execute(query, (username, postid))
         self.conn.commit()
 
-        request = sql.SQL("update posts set {} = likes + 1 where postid = %s;").format(sql.Identifier(BlogApp_TableNames.likes))
+        query = sql.SQL("update posts set {} = likes + 1 where postid = %s;").format(sql.Identifier(BlogApp_TableNames.likes))
 
-        self.cursor.execute(request, (postid,))
+        self.cursor.execute(query, (postid,))
         self.conn.commit()
 
     def get_user_likes(self, username: str, limit: int = 100):
         try:
-            request = sql.SQL("select (postid) from {} where username like %s limit %s").format(sql.Identifier(BlogApp_TableNames.likes))
+            query = sql.SQL("select (postid) from {} where username like %s limit %s").format(sql.Identifier(BlogApp_TableNames.likes))
 
-            self.cursor.execute(request, (username, limit))
+            self.cursor.execute(query, (username, limit))
             res = self.cursor.fetchall()
 
             return res
@@ -128,9 +134,9 @@ class BlogApp_DB:
 
     def get_user_posts(self, username: str, limit: int = 100):
         try:
-            request = sql.SQL("select * from {} where creator like %s order by postid desc limit %s;").format(sql.Identifier(BlogApp_TableNames.posts))
+            query = sql.SQL("select * from {} where creator like %s order by postid desc limit %s;").format(sql.Identifier(BlogApp_TableNames.posts))
 
-            self.cursor.execute(request, (username, limit))
+            self.cursor.execute(query, (username, limit))
             res = self.cursor.fetchall()
             res = self._result_to_dict(result=res)
 
@@ -143,8 +149,8 @@ class BlogApp_DB:
         db_errors = []
 
         try:
-            request = sql.SQL("select * from users where username like %s limit 1;")
-            self.cursor.execute(request, (username,))
+            query = sql.SQL("select * from users where username like %s limit 1;")
+            self.cursor.execute(query, (username,))
             res = self.cursor.fetchall()
 
             res = self._result_to_dict(result=res)

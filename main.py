@@ -147,7 +147,6 @@ def logout():
     # Redirect to home page
     return redirect(url_for("index"))
 
-
 @app.route("/settings", methods=["GET", "POST"])
 @login_required
 def settings():
@@ -161,6 +160,8 @@ def settings():
         # Set up new username
         username = profile_update.new_username.data
 
+
+
         # Check if user want to check username
         if username:
 
@@ -170,11 +171,10 @@ def settings():
             # Check if there's user with new username
             username_exists_error = database.get_user(username=username)
 
-
             if not username_valid_error:
                 if not username_exists_error:
 
-                    # If there're no errors, update username and logging user out to update UserLogin instance
+                    # If there're no errors, update username and log user out to update UserLogin instance
                     database.update_username(userid=int(current_user.get_id()),
                                              new_username=username)
                     flash("Success. Log in to apply changes!", category="success")
@@ -190,6 +190,44 @@ def settings():
 
                 # Notifying user about Username Validity error
                 flash(username_valid_error, category="error")
+
+        # Set up new password
+        new_password = profile_update.new_password.data
+
+        if new_password:
+            # If new password specified also get old password
+            # and new password confirm (repeat)
+            old_password = profile_update.old_password.data
+            rnew_password = profile_update.rnew_password.data
+
+            # Check old password accuracy
+            if check_password_hash(current_user.get_password_hash(), old_password):
+
+                # Check for new password validity errors
+                new_password_validity_error = check_password_validity(new_password)
+
+                if not new_password_validity_error:
+                    if new_password == rnew_password:
+
+                        # If there're no errors, update password and log user out to update UserLogin instance
+                        new_password = generate_password_hash(password=new_password)
+                        database.update_password(password=new_password, userid=current_user.get_id())
+                        flash("Password changed successfully!", category="success")
+                        logout()
+
+                        # Redirect to the home page
+                        return redirect(url_for("index"))
+                    else:
+
+                        # Notify user about passwords doesn't match
+                        flash("New passwords doesn't match!", category="error")
+                else:
+
+                    # Notify user about password validity error
+                    flash(new_password_validity_error, category="error")
+            else:
+                # Notify user to check old password accuracy
+                flash("Double check old password!", category="error")
 
 
     return render_template("settings.html",

@@ -16,6 +16,9 @@ class UserLogin(UserMixin):
         self.__user = db.get_user_by_id(user_id)
         return self
 
+    def get_password_hash(self):
+        return str(self.__user["password"])
+
     def get_profile_picture_src(self):
         return str(self.__user['profile_picture'])
 

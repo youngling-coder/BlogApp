@@ -27,18 +27,13 @@
 
                 {{ update_form.csrf_token }}
 
-                <!-- Not available yet -->
-                <!-- <h4>Profile picture (available soon)</h4>
-                {{ update_form.file_input }}
-                <label class="image-input" for="profile_picture_uploader">Load picture</label> -->
-
                 <h4>Username</h4>
                 {{ update_form.new_username}}
 
                 <h4>Password</h4>
                 {{ update_form.old_password }}
-                {{ update_form.rnew_password }}
                 {{ update_form.new_password }}
+                {{ update_form.rnew_password }}
 
                 <button>Save changes</button>
 

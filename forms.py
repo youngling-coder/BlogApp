@@ -40,9 +40,6 @@ class LoginForm(Form):
 
 
 class UpdateProfileForm(Form):
-    # file_input = FileField(label="Upload pic", render_kw={"id": "profile_picture_uploader"},validators=[
-    #     FileAllowed(['image/*'])
-    # ])
 
     new_username = StringField(validators=[validators.Length(max=32)], render_kw={"placeholder": "Enter new username..."})
 
