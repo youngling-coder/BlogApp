@@ -19,3 +19,5 @@ def generate_posts(username: str):
         content = _generate_content()
 
         db_.create_post(creator=username, title=title, content=content)
+
+generate_posts(username="user1")

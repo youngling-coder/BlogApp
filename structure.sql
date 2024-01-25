@@ -1,7 +1,3 @@
--- drop table if exists likes;
--- drop table if exists posts;
--- drop table if exists users;
-
 CREATE TABLE IF NOT EXISTS users (
     userid SERIAL PRIMARY KEY,
     username VARCHAR(32) NOT NULL UNIQUE,
@@ -23,9 +19,3 @@ CREATE TABLE IF NOT EXISTS likes (
     username VARCHAR(32) NOT NULL REFERENCES users(username),
     postid INTEGER NOT NULL REFERENCES posts(postid)
 )
-
--- CREATE TABLE IF NOT EXISTS messages {
---     messageid SERIAL PRIMARY KEY,
---     username VARCHAR(32) NOT NULL REFERENCES users(username),
---     content VARCHAR(255) NOT NULL
--- }

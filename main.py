@@ -123,7 +123,6 @@ def feed(username):
 
     # Obtain likes that user made
     user_likes = database.get_user_likes(username=current_user.get_username())
-    user_likes = [like[0] for like in user_likes]
 
     # Render user's feed
     return render_template(template_name_or_list="feed.html",
@@ -322,6 +321,13 @@ def index():
 
     return render_template("index.html", title="Log In", form=form)
 
+@app.route("/delete_user")
+def delete_user():
+    database.delete_user(username=current_user.get_username())
+    flash("We're sorry you're leaving... Your account deleted. ", category="success")
+    logout_user()
+
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
-    app.run(debug=DEBUG)
+    app.run(debug=DEBUG, host="0.0.0.0")

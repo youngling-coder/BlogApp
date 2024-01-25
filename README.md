@@ -12,8 +12,9 @@ Twitter (X) alike blog application.
 - Post like/dislike
 - Page not found handling
 - Password change
+- Account deletion
 
 ### 📃 TODO:
 - Profile profile picture changing
-- Account deletion
 - Global Chat
+- Post deletion

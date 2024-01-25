@@ -27,15 +27,26 @@ class BlogApp_DB:
             print(e)
 
     def update_password(self, password, userid):
-
         query = sql.SQL("update {} set password = %s where userid = %s;").format(sql.Identifier(BlogApp_TableNames.users))
         self.cursor.execute(query, (password, userid))
         self.conn.commit()
 
-    def delete_user(self, userid):
+    def delete_user(self, username):
         try:
-            query = sql.SQL("delete from {} where userid = %s;").format(sql.Identifier(BlogApp_TableNames.users))
-            self.cursor.execute(query, (userid,))
+            likes = self.get_user_likes(username=username)
+
+            if likes:
+                for postid in likes:
+                    self.delete_like(username=username, postid=postid)
+
+            posts = self.get_user_posts(username=username)
+
+            if posts:
+                for post in posts:
+                    self.delete_post(post["postid"])
+
+            query = sql.SQL("delete from {} where username = %s;").format(sql.Identifier(BlogApp_TableNames.users))
+            self.cursor.execute(query, (username,))
             self.conn.commit()
         except Exception as e:
             print(e)
@@ -82,6 +93,15 @@ class BlogApp_DB:
         self.cursor.execute(query, (creator, title, content))
         self.conn.commit()
 
+    def delete_post(self, postid):
+        queries = [
+            sql.SQL("delete from {} where postid = %s;").format(sql.Identifier(BlogApp_TableNames.likes)),
+            sql.SQL("delete from {} where postid = %s;").format(sql.Identifier(BlogApp_TableNames.posts))
+        ]
+
+        for q in queries:
+            self.cursor.execute(q, (postid,))
+            self.conn.commit()
 
     def get_user_by_id(self, id_):
         db_errors = []
@@ -120,23 +140,24 @@ class BlogApp_DB:
         self.cursor.execute(query, (postid,))
         self.conn.commit()
 
-    def get_user_likes(self, username: str, limit: int = 100):
+    def get_user_likes(self, username: str):
         try:
-            query = sql.SQL("select (postid) from {} where username like %s limit %s").format(sql.Identifier(BlogApp_TableNames.likes))
+            query = sql.SQL("select (postid) from {} where username like %s;").format(sql.Identifier(BlogApp_TableNames.likes))
 
-            self.cursor.execute(query, (username, limit))
+            self.cursor.execute(query, (username,))
             res = self.cursor.fetchall()
+            res = [like[0] for like in res]
 
             return res
         except Exception as e:
             print(e)
             return None
 
-    def get_user_posts(self, username: str, limit: int = 100):
+    def get_user_posts(self, username: str):
         try:
-            query = sql.SQL("select * from {} where creator like %s order by postid desc limit %s;").format(sql.Identifier(BlogApp_TableNames.posts))
+            query = sql.SQL("select * from {} where creator like %s order by postid desc;").format(sql.Identifier(BlogApp_TableNames.posts))
 
-            self.cursor.execute(query, (username, limit))
+            self.cursor.execute(query, (username,))
             res = self.cursor.fetchall()
             res = self._result_to_dict(result=res)
 
