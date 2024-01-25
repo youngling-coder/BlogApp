@@ -1,8 +1,15 @@
-# BlogApp
+# 🌐 BlogApp
 
-Twitter (X) alike blog application.
+Simple blog application similar to Twitter (X) with all basic functionality implemented. This is a study project that can't be used as a production application.
 
 ### 🔧 Stage: in development
+
+### ⚙ Used tools and technologies
+- **Flask** as main development framework
+- **PostgreSQL** as Database Management System
+- **WTForms** for designing forms
+- HTML/CSS as front-end stack
+- Python as back-end programming language
 
 ### ✅ DONE:
 - Sign Up and Log In
